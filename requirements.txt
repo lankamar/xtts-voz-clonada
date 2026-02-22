@@ -1,0 +1,27 @@
+# ============================================================
+# XTTS Voz Clonada - Requirements
+# Python 3.10 recomendado
+# ============================================================
+
+# Servidor TTS
+xtts-api-server
+
+# Web framework
+fastapi>=0.104.1
+uvicorn[standard]>=0.24.0
+
+# Audio
+pydub
+soundfile
+
+# ML / GPU
+torch>=2.1.0
+torchaudio>=2.1.0
+transformers==4.36.2
+accelerate
+
+# Utils
+python-dotenv
+loguru
+requests
+numpy
