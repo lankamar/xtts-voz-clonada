@@ -1,40 +1,39 @@
 @echo off
 :: =============================================================================
-:: LANKAMAR TTS — Iniciador de un solo clic
+:: LANKAMAR TTS v2 — Iniciador de un solo clic
 :: =============================================================================
-:: Activa el entorno conda "coquitts" y lanza el servidor Flask.
-:: Luego abre el navegador automáticamente en la URL correcta.
+:: Lanza el servidor usando el Python del entorno venv "coquitts".
+:: No requiere conda ni activacion manual.
 ::
-:: Cómo usar:
-::   Doble clic en este archivo desde el Explorador de Windows.
+:: Uso: doble clic desde el Explorador de Windows.
 ::
-:: Requisito:
-::   El entorno conda "coquitts" debe estar en la carpeta del proyecto.
-::   Si usás una ruta diferente, modificá la línea de python.exe abajo.
+:: Estructura esperada:
+::   C:\tts-extension\
+::   |-- coquitts\Scripts\python.exe   <- entorno venv con coqui-tts
+::   |-- server\server.py              <- servidor Flask v2
+::   |-- server\speakers\              <- fragmentos de voz WAV
+::   |-- frontend\index.html           <- interfaz web
 :: =============================================================================
 
-title LANKAMAR TTS — Servidor de Voz
+title LANKAMAR TTS v2 — Motor de Voz
 
-:: Nos ubicamos en la carpeta del proyecto (donde está este .bat)
 cd /d "%~dp0"
 
 echo.
 echo  =====================================================
-echo   LANKAMAR TTS — Iniciando motor de sintesis de voz
+echo   LANKAMAR TTS v2 — Iniciando motor de sintesis
 echo  =====================================================
 echo.
-echo  Cargando modelo XTTS v2...
-echo  Esto puede tardar 20-30 segundos la primera vez.
+echo  Cargando modelo XTTS v2 (20-40 segundos la primera vez)...
 echo.
-echo  Cuando veas "Servidor disponible en: http://127.0.0.1:5001"
-echo  abrí tu navegador en esa URL.
+echo  Cuando aparezca "Servidor disponible en: http://127.0.0.1:5001"
+echo  abre tu navegador en esa URL.
 echo.
-echo  Para detener: cerrá esta ventana o presioná Ctrl+C
+echo  Podés pegar texto plano O scripts SSML directamente.
+echo  Para detener: cerrá esta ventana o Ctrl+C
 echo.
 
-:: Ejecutar con el Python del entorno coquitts directamente
-:: (sin necesitar "conda activate" que puede fallar en PowerShell)
-"%~dp0coquitts\python.exe" "%~dp0server\server.py"
+"%~dp0coquitts\Scripts\python.exe" "%~dp0server\server.py"
 
 echo.
 echo  El servidor se detuvo.
