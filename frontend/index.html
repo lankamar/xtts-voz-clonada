@@ -3,223 +3,214 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>XTTS - Voz Clonada</title>
+  <title>LANKAMAR TTS — Síntesis de Voz</title>
+  <meta name="description" content="Motor de texto a voz offline con clonación de voz usando XTTS v2. Proyecto de Lankamar.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* -------------------------------------------------------------------------
+       Variables de diseño — modificar aquí para cambiar la paleta completa
+    -------------------------------------------------------------------------- */
+    :root {
+      --bg-deep:      #0a0a14;
+      --bg-card:      rgba(255, 255, 255, 0.04);
+      --bg-input:     rgba(255, 255, 255, 0.06);
+      --border:       rgba(255, 255, 255, 0.08);
+      --accent:       #7c83fd;
+      --accent-hover: #5a62d4;
+      --accent-glow:  rgba(124, 131, 253, 0.3);
+      --text-main:    #e8e8f0;
+      --text-muted:   #7a7a9a;
+      --ok:           #4ade80;
+      --err:          #f87171;
+      --loading:      #facc15;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #0d1117;
-      color: #e6edf3;
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--bg-deep);
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
+      background-image:
+        radial-gradient(ellipse at 20% 20%, rgba(124,131,253,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(90,98,212,0.05) 0%, transparent 60%);
     }
+
     .card {
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
       width: 100%;
-      max-width: 620px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      max-width: 640px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 20px 60px rgba(0,0,0,0.5);
     }
+
+    .header { text-align: center; margin-bottom: 32px; }
+
+    .logo {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
     h1 {
-      font-size: 1.5rem;
-      margin-bottom: 6px;
-      color: #58a6ff;
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
     }
-    .subtitle {
-      font-size: 0.85rem;
-      color: #8b949e;
-      margin-bottom: 24px;
-    }
+
     label {
       display: block;
-      font-size: 0.85rem;
-      color: #8b949e;
-      margin-bottom: 6px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
     }
+
     textarea {
       width: 100%;
-      height: 120px;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      color: #e6edf3;
-      font-size: 1rem;
-      padding: 12px;
+      height: 150px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 14px 16px;
       resize: vertical;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    textarea:focus { border-color: #58a6ff; }
-    .row {
-      display: flex;
-      gap: 12px;
-      margin-top: 16px;
-      align-items: flex-end;
-    }
-    .field { flex: 1; }
-    input[type=text] {
+
+    textarea::placeholder { color: var(--text-muted); }
+    textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+    button#btn {
+      display: block;
       width: 100%;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      color: #e6edf3;
-      font-size: 0.95rem;
-      padding: 10px 12px;
-      outline: none;
-    }
-    input[type=text]:focus { border-color: #58a6ff; }
-    select {
-      width: 100%;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      color: #e6edf3;
-      font-size: 0.95rem;
-      padding: 10px 12px;
-      outline: none;
-    }
-    button {
       margin-top: 20px;
-      width: 100%;
-      padding: 12px;
-      background: #238636;
+      padding: 14px;
+      background: var(--accent);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
     }
-    button:hover:not(:disabled) { background: #2ea043; }
-    button:disabled { background: #21262d; color: #8b949e; cursor: not-allowed; }
+
+    button#btn:hover:not(:disabled) { background: var(--accent-hover); box-shadow: 0 4px 20px var(--accent-glow); }
+    button#btn:active:not(:disabled) { transform: scale(0.99); }
+    button#btn:disabled { background: rgba(124,131,253,0.3); cursor: not-allowed; }
+
     .status {
       margin-top: 14px;
-      font-size: 0.88rem;
-      color: #8b949e;
-      min-height: 20px;
-    }
-    .status.error { color: #f85149; }
-    .status.ok { color: #3fb950; }
-    audio {
-      width: 100%;
-      margin-top: 16px;
-      border-radius: 8px;
-    }
-    .footer {
-      margin-top: 24px;
-      font-size: 0.75rem;
-      color: #484f58;
+      font-size: 0.85rem;
       text-align: center;
+      color: var(--text-muted);
+      min-height: 22px;
+      transition: color 0.2s;
     }
+    .status.ok      { color: var(--ok); }
+    .status.err     { color: var(--err); }
+    .status.loading { color: var(--loading); }
+
+    audio { display: block; width: 100%; margin-top: 20px; border-radius: 8px; filter: invert(1) hue-rotate(200deg) brightness(0.85); }
+
+    footer { margin-top: 28px; text-align: center; font-size: 0.75rem; color: var(--text-muted); }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>Sintesis de voz clonada</h1>
-    <p class="subtitle">XTTS v2 &mdash; API local en :5051</p>
+    <div class="header">
+      <p class="logo">Lankamar</p>
+      <h1>Síntesis de Voz</h1>
+    </div>
 
     <label for="texto">Texto a sintetizar</label>
-    <textarea id="texto" placeholder="Escribi el texto aca..."></textarea>
+    <textarea
+      id="texto"
+      placeholder="Escribí el texto acá y presioná Generar Audio... (Ctrl+Enter para enviar)"
+      autofocus
+    ></textarea>
 
-    <div class="row">
-      <div class="field">
-        <label for="speaker">Speaker (nombre del .wav)</label>
-        <input type="text" id="speaker" value="marcelo" placeholder="marcelo">
-      </div>
-      <div class="field">
-        <label for="lang">Idioma</label>
-        <select id="lang">
-          <option value="es" selected>Espanol (es)</option>
-          <option value="en">English (en)</option>
-          <option value="pt">Portugues (pt)</option>
-          <option value="fr">Francais (fr)</option>
-          <option value="de">Deutsch (de)</option>
-          <option value="it">Italiano (it)</option>
-          <option value="pl">Polski (pl)</option>
-          <option value="ru">Русский (ru)</option>
-          <option value="nl">Nederlands (nl)</option>
-          <option value="cs">Cestina (cs)</option>
-          <option value="ar">العربية (ar)</option>
-          <option value="zh-cn">中文 (zh-cn)</option>
-          <option value="ja">日本語 (ja)</option>
-          <option value="hu">Magyar (hu)</option>
-          <option value="ko">한국어 (ko)</option>
-          <option value="tr">Turkce (tr)</option>
-        </select>
-      </div>
-    </div>
+    <button id="btn" onclick="generar()">Generar Audio</button>
 
-    <button id="btn" onclick="generar()">Generar audio</button>
+    <p class="status" id="estado" role="status" aria-live="polite"></p>
 
-    <p class="status" id="status"></p>
-    <audio id="player" controls style="display:none"></audio>
+    <audio id="player" controls></audio>
 
-    <div class="footer">
-      github.com/lankamar/xtts-voz-clonada &bull; MIT License
-    </div>
+    <footer>
+      Motor: <strong>XTTS v2</strong> · 100% offline ·
+      <a href="https://github.com/lankamar/xtts-voz-clonada" target="_blank">GitHub</a>
+    </footer>
   </div>
 
   <script>
-    const API = 'http://127.0.0.1:5051';
-
     async function generar() {
-      const texto   = document.getElementById('texto').value.trim();
-      const speaker = document.getElementById('speaker').value.trim() || 'marcelo';
-      const lang    = document.getElementById('lang').value;
-      const btn     = document.getElementById('btn');
-      const status  = document.getElementById('status');
-      const player  = document.getElementById('player');
+      const texto = document.getElementById('texto').value.trim();
+      const btn   = document.getElementById('btn');
+      const audio = document.getElementById('player');
 
-      if (!texto) {
-        setStatus('Escribi algo primero.', 'error');
-        return;
-      }
+      if (!texto) { setEstado('Escribí algo antes de generar.', 'err'); return; }
 
       btn.disabled = true;
-      setStatus('Generando audio...');
-      player.style.display = 'none';
+      setEstado('Generando audio, esperá un momento...', 'loading');
 
       try {
-        const res = await fetch(`${API}/tts_to_audio`, {
+        const respuesta = await fetch('/tts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: texto, speaker_wav: speaker, language: lang })
+          body: JSON.stringify({ text: texto })
         });
 
-        if (!res.ok) {
-          const err = await res.text();
-          throw new Error(`Error ${res.status}: ${err}`);
+        if (!respuesta.ok) {
+          const mensajeError = await respuesta.text();
+          throw new Error(mensajeError || `Error del servidor (HTTP ${respuesta.status})`);
         }
 
-        const blob = await res.blob();
-        const url  = URL.createObjectURL(blob);
-        player.src = url;
-        player.style.display = 'block';
-        player.play();
-        setStatus('Audio generado correctamente.', 'ok');
+        const blob   = await respuesta.blob();
+        const srcUrl = URL.createObjectURL(blob);
+        audio.src = srcUrl;
+        audio.play();
+        setEstado('Audio generado correctamente.', 'ok');
 
-      } catch (err) {
-        setStatus(err.message, 'error');
-        console.error(err);
+      } catch (error) {
+        setEstado('Error: ' + error.message, 'err');
+        console.error('[LANKAMAR TTS] Error:', error);
       } finally {
         btn.disabled = false;
       }
     }
 
-    function setStatus(msg, type = '') {
-      const el = document.getElementById('status');
-      el.textContent = msg;
-      el.className = 'status ' + type;
+    function setEstado(mensaje, clase) {
+      const el = document.getElementById('estado');
+      el.textContent = mensaje;
+      el.className   = 'status ' + (clase || '');
     }
 
-    // Enter para generar
-    document.addEventListener('keydown', e => {
+    // Atajo: Ctrl+Enter para generar sin usar el mouse
+    document.getElementById('texto').addEventListener('keydown', function(e) {
       if (e.ctrlKey && e.key === 'Enter') generar();
     });
   </script>

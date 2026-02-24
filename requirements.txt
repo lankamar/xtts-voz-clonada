@@ -1,27 +1,38 @@
-# ============================================================
-# XTTS Voz Clonada - Requirements
-# Python 3.10 recomendado
-# ============================================================
+# =============================================================================
+# LANKAMAR TTS — Dependencias
+# =============================================================================
+# Versiones exactas probadas y verificadas en Windows con Conda (Python 3.11)
+# Entorno: coquitts (Anaconda local en el directorio del proyecto)
+#
+# IMPORTANTE: NO actualizar estas versiones sin verificar compatibilidad.
+# La combinación exacta a continuación fue la única que resolvió los
+# conflictos entre PyTorch y transformers en este proyecto.
+# Días de prueba y error condujeron a estas versiones exactas.
+#
+# Instalación:
+#   conda activate coquitts
+#   pip install -r requirements.txt
+# =============================================================================
 
-# Servidor TTS
-xtts-api-server
+# --- Motor TTS ---
+# Fork mantenido por Idiap (el original de Coqui fue abandonado en 2023).
+# La versión 0.25.3 es compatible con torch 2.5.x y transformers 4.46.x.
+coqui-tts==0.25.3
 
-# Web framework
-fastapi>=0.104.1
-uvicorn[standard]>=0.24.0
+# --- PyTorch ---
+# Versión 2.5.1 es el techo de compatibilidad con coqui-tts 0.25.3.
+# torch > 2.6 rompe el cargador de modelos de TTS.
+torch==2.5.1
+torchaudio==2.5.1
 
-# Audio
-pydub
-soundfile
+# --- Transformers (Hugging Face) ---
+# 4.46.2 es la última versión compatible. Versiones > 4.47 introducen
+# cambios breaking en BeamSearchScorer que usa XTTS v2 internamente.
+transformers==4.46.2
 
-# ML / GPU
-torch>=2.1.0
-torchaudio>=2.1.0
-transformers==4.36.2
-accelerate
+# --- Servidor web ---
+flask>=3.0.0
 
-# Utils
-python-dotenv
-loguru
-requests
-numpy
+# --- Audio ---
+soundfile>=0.12.1
+numpy>=1.26.0
